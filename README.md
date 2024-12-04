@@ -18,3 +18,10 @@ Example commands: `manage_shebang.sh -f my_file.py -p /usr/bin/ -e my_wrapper`, 
 This is particularly useful when used with the find command:
 
 `find . -name "*.py" -type f -exec ./manage_shebang.sh -f {} -e my_wrapper -v impala` - this will change all .py files that have a shebang with `#!/usr/bin/env my_wrapper` except for files that have `impala` in their existing shebang. This is useful for projects that already point to their own specific version of python.
+
+You can also use grep and xargs to go through all files in a directory recursively, if you need to do this with files that don't have a convenient extension.
+
+```
+# Go through all files that have a shebang containing 'python'
+grep -rl "^#\!.*python" /my/directory/of/files | xargs -I{} ./manage_shebang.sh -f {} -e my_python_wrapper -v impala
+```
