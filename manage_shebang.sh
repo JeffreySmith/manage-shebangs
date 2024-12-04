@@ -83,16 +83,18 @@ if [ "$(printf '%s' "$PREFIX" | tail -c 3)" = "env" ]; then
     PREFIX="$PREFIX "
 elif [ "$(printf '%s' "$PREFIX" | tail -c 1)" != "/" ]; then
     PREFIX="$PREFIX/"
-fi
+fi 
 
-if [ -n "$IGNORE" ] && head -n 1 "$FILE" | grep "$IGNORE" >/dev/null; then
+if echo "$FILE" | grep ".orig">/dev/null; then
+    if "$VERBOSE"; then
+        printf "Skipping file '%s' since it's a backup file\n" "$FILE"
+    fi
+elif [ -n "$IGNORE" ] && head -n 1 "$FILE" | grep "$IGNORE" >/dev/null; then
     if "$VERBOSE"; then
         printf 'Skipping "%s" since its shebang matches "%s"\n' "$FILE" "$IGNORE"
     fi
     exit 0
-fi
-
-if head -n 1 "$FILE" | grep "^#\!" >/dev/null; then
+elif head -n 1 "$FILE" | grep "^#\!" >/dev/null; then
     if [ -w "$FILE" ]; then
         if "$BACKUP"; then
             #Create a backup of the original file in case we need it for verification
